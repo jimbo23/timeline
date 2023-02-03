@@ -1,22 +1,19 @@
-import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
+import Select from 'react-select';
 import { data } from './data';
+
+const options = data.map((i) => ({
+  label: i.designation,
+  value: i.designation,
+}));
 
 export const MySelect = ({ selected, setSelected }) => {
   return (
-    <FormControl fullWidth>
-      <InputLabel>Location</InputLabel>
-      <Select
-        value={selected}
-        label="Location"
-        onChange={(e) => setSelected(e.target.value)}
-      >
-        {/* for the `data` below, use the `dataFromBlockChain`, see if you can do it by passing props or not */}
-        {data.map((timeline) => (
-          <MenuItem key={timeline.designation} value={timeline.designation}>
-            {timeline.designation}
-          </MenuItem>
-        ))}
-      </Select>
-    </FormControl>
+    <Select
+      onChange={(option) => {
+        setSelected(option?.value);
+      }}
+      options={options}
+      value={options.find((i) => i.value === selected)}
+    />
   );
 };
