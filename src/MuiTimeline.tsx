@@ -7,20 +7,20 @@ import {
   TimelineOppositeContent,
   TimelineSeparator,
 } from '@mui/lab';
-import { useState } from 'react';
+import { useQueryState } from './use-query-state';
 import { MySelect } from './MySelect';
 import { data } from './data';
 import { transform } from './transformer';
 
 export default function MuiTimeline() {
-  const [selected, setSelected] = useState('');
+  const [selected, setSelected] = useQueryState('location');
 
   const timelines = transform(data);
 
   // let selectedTimeline: TransformedData = timelines;
   let selectedTimeline = timelines;
 
-  if (selected !== '') {
+  if (selected) {
     // if selected is no longer an empty string, it means the LocationSelect is changed
     // then pls go and find the `row` index in the timeline
     // then update the `selectedTimeline` variable with the new value
