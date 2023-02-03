@@ -29,6 +29,11 @@ export default function MuiTimeline() {
         timeline.designation === selected ||
         timeline?.opposite?.designation === selected
     );
+    if (selected === selectedTimeline[row]?.opposite?.designation) {
+      let temp = selectedTimeline[row];
+      selectedTimeline[row] = selectedTimeline[row]?.opposite;
+      selectedTimeline[row].opposite = temp;
+    }
     selectedTimeline = timelines.slice(row, timelines.length);
   }
 
