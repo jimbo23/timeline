@@ -21,18 +21,33 @@ export default function MuiTimeline() {
   let selectedTimeline = timelines;
 
   if (selected) {
-    // if selected is no longer an empty string, it means the LocationSelect is changed
+    // if selected is not null or not undefined or not empty string, it means the LocationSelect is changed
     // then pls go and find the `row` index in the timeline
-    // then update the `selectedTimeline` variable with the new value
     let row = selectedTimeline.findIndex(
       (timeline) =>
         timeline.designation === selected ||
-        timeline?.opposite?.designation === selected
+        timeline?.opposite?.find((i) => i.designation === selected)
     );
-    if (selected === selectedTimeline[row]?.opposite?.designation) {
+
+    const foundItem = selectedTimeline[row].opposite.find(
+      (i) => i.designation === selected
+    );
+
+    if (foundItem) {
       let temp = selectedTimeline[row];
-      selectedTimeline[row] = selectedTimeline[row]?.opposite;
-      selectedTimeline[row].opposite = temp;
+      selectedTimeline[row] = {
+        ...foundItem,
+        opposite: [
+          ...temp.opposite.filter((i) => i.designation !== selected),
+          {
+            date: temp.date,
+            designation: temp.designation,
+            senderDesignation: temp.senderDesignation,
+            time: temp.time,
+            transferQty: temp.transferQty,
+          },
+        ],
+      };
     }
     selectedTimeline = timelines.slice(row, timelines.length);
   }
@@ -44,15 +59,10 @@ export default function MuiTimeline() {
         {selectedTimeline.map((timeline, idx) => (
           <TimelineItem key={timeline.designation}>
             <TimelineOppositeContent>
-              {timeline.opposite && (
-                <>
-                  <div>
-                    {timeline.date} {timeline.opposite.time}
-                  </div>
-                  <div>Unit Received: {timeline.opposite.transferQty}</div>
-                  <div>Arrived At {timeline.opposite.designation}</div>
-                </>
-              )}
+              {timeline.opposite.length > 0 &&
+                timeline.opposite.map((i) => (
+                  <div key={i.designation}>Arrived At {i.designation}</div>
+                ))}
             </TimelineOppositeContent>
             <TimelineSeparator>
               <TimelineDot />
@@ -68,6 +78,9 @@ export default function MuiTimeline() {
           </TimelineItem>
         ))}
       </Timeline>
+      <pre>
+        <code>{JSON.stringify(selectedTimeline, null, 2)}</code>
+      </pre>
     </>
   );
 }

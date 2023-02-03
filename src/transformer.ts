@@ -1,14 +1,16 @@
 import { data } from './data';
 
 // type Data = typeof data;
-// export type TransformedData = Array<{
+// export type TransformedData = BigObject[];
+
+// export type BigObject = {
 //   designation: string;
-//   opposite: TransformedData[0];
+//   opposite: Omit<BigObject, 'opposite'>[];
 //   senderDesignation: string;
 //   transferQty: number;
 //   time: string;
 //   date: string;
-// }>;
+// };
 
 // export function transform(data: Data): TransformedData {
 export function transform(data) {
@@ -18,14 +20,14 @@ export function transform(data) {
     if (!seen.get(item.senderDesignation)) {
       transformedData.push({
         ...item,
-        opposite: null,
+        opposite: [],
       });
       seen.set(item.senderDesignation, true);
     } else {
       let foundItem = transformedData.find(
         (data) => data.senderDesignation === item.senderDesignation
       );
-      foundItem.opposite = { ...item, opposite: null };
+      foundItem.opposite = [...foundItem.opposite, item];
     }
   });
 
